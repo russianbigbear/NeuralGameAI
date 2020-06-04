@@ -1,2 +1,2 @@
 # NeuralGameAI
-Plugin for managing game characters based on artificial neural networks + demonstration application.
+Плагин для управления игровыми персонажами на основе исскуственных нейронных сетей для игрового движка Unity и демонстрацинное приложение, которое показывает основные принципы работы дополнения.
