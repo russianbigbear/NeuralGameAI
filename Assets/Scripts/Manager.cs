@@ -79,7 +79,6 @@ public class Manager : MonoBehaviour
         Generation++;
         CountPlayers = PlayerPrefs.GetInt("PlayersSize");
 		LastPlayerList = PlayerList;
-        Save();
 		PlayerList = new List<Player>();
 		InstantiatePlayers();
 		StartCoroutine(GenerateObstacle());
