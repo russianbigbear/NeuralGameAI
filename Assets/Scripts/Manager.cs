@@ -12,22 +12,26 @@ public class Manager : MonoBehaviour
 
     // Объекты Prefabs
     public GameObject Player;
-    public GameObject ObstacleSpikes;
+    public GameObject ObstacleSpike;
     public GameObject ObstacleRock;
-    public GameObject ObstacleCrate;
-    public GameObject ObstacleSkulls;
-
-    // Переременные счетчики 
-    public int CountPlayers;
-    public int DeadCount;
-    public float ProbabilityChange;
-    public float MaxDistance;
-    public int Generation;
-    public int IsSave;
+    public GameObject ObstacleBox;
+    public GameObject ObstacleSkull;
 
     // Списки игроков
     public List<Player> LastPlayerList;
     public List<Player> PlayerList;
+
+    // Счетчик
+    public int DeadCount;
+
+    // Статистика
+    public int CountPlayers;
+    public float ProbabilityChange;
+    public float MaxDistance;
+    public int Generation;
+
+    // Флаг сохранения
+    public int IsSave;
 
     #endregion
 
@@ -67,32 +71,33 @@ public class Manager : MonoBehaviour
 	}
 
     /// <summary>
-    /// Конец генерации.
-    /// </summary>
-    /// <returns></returns>
-	IEnumerator EndGeneration()
-	{
-		yield return new WaitForSeconds(1.2f);
-		StopAllCoroutines();
-		CancelInvoke();
-		DestroyObstacles();  
-		DestroyAllPlayers();
-        StartGeneration();
-    }
-
-    /// <summary>
     /// Старт генерации.
     /// </summary>
 	void StartGeneration()
 	{
-		Generation++;
-		CountPlayers = PlayerPrefs.GetInt("PlayersSize");
-		DeadCount = 0;
+        DeadCount = 0;
+        Generation++;
+        CountPlayers = PlayerPrefs.GetInt("PlayersSize");
 		LastPlayerList = PlayerList;
+        Save();
 		PlayerList = new List<Player>();
 		InstantiatePlayers();
 		StartCoroutine(GenerateObstacle());
 	}
+
+    /// <summary>
+    /// Конец генерации.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EndGeneration()
+    {
+        yield return new WaitForSeconds(1.2f);
+        StopAllCoroutines();
+        CancelInvoke();
+        DestroyObstacles();
+        DestroyAllPlayers();
+        StartGeneration();
+    }
 
     /// <summary>
     /// Удаление всех препятствий.
@@ -208,7 +213,7 @@ public class Manager : MonoBehaviour
         switch (UnityEngine.Random.Range(1, 5))
         {
             case 1: {
-                    Obstacle = Instantiate(ObstacleSpikes, new Vector2(0, (bottomHeight / 2)), Quaternion.identity);
+                    Obstacle = Instantiate(ObstacleSpike, new Vector2(0, (bottomHeight / 2)), Quaternion.identity);
                     Obstacle.GetComponent<RectTransform>().sizeDelta = new Vector2(88, bottomHeight);
                     Obstacle.GetComponent<BoxCollider2D>().size = Obstacle.GetComponent<RectTransform>().sizeDelta;
                     break;
@@ -220,18 +225,18 @@ public class Manager : MonoBehaviour
                     break; 
                 }
             case 3: { 
-                    Obstacle = Instantiate(ObstacleCrate, new Vector2(0, (bottomHeight / 2)), Quaternion.identity);
+                    Obstacle = Instantiate(ObstacleBox, new Vector2(0, (bottomHeight / 2)), Quaternion.identity);
                     Obstacle.GetComponent<RectTransform>().sizeDelta = new Vector2(88, bottomHeight);
                     Obstacle.GetComponent<BoxCollider2D>().size = Obstacle.GetComponent<RectTransform>().sizeDelta;
                     break; 
                 }
             case 4: { 
-                    Obstacle = Instantiate(ObstacleSkulls, new Vector2(0, (bottomHeight / 2)), Quaternion.identity); 
+                    Obstacle = Instantiate(ObstacleSkull, new Vector2(0, (bottomHeight / 2)), Quaternion.identity); 
                     Obstacle.GetComponent<RectTransform>().sizeDelta = new Vector2(88, bottomHeight);
                     Obstacle.GetComponent<BoxCollider2D>().size = Obstacle.GetComponent<RectTransform>().sizeDelta;
                     break;
                 }
-            default: { Obstacle = Instantiate(ObstacleSpikes, new Vector2(0, (bottomHeight / 2)), Quaternion.identity); break; }
+            default: { Obstacle = Instantiate(ObstacleSpike, new Vector2(0, (bottomHeight / 2)), Quaternion.identity); break; }
         }    
 
         Obstacle.transform.SetParent(GameObject.Find("InstantiatedObstacles").transform, false);
@@ -240,13 +245,12 @@ public class Manager : MonoBehaviour
 
     #endregion
 
-
     #region Player saves
 
-        /// <summary>
-        /// Загрузка предыдущих значений слайдеров.
-        /// </summary>
-        void LoadPlayerPrefs()
+    /// <summary>
+    /// Загрузка предыдущих значений слайдеров.
+    /// </summary>
+    void LoadPlayerPrefs()
     {
         CountPlayers = PlayerPrefs.GetInt("PlayersSize", 50);
         ProbabilityChange = PlayerPrefs.GetFloat("ProbabilityChange", 0.025f);
