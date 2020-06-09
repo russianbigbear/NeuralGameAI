@@ -79,6 +79,7 @@ public class Manager : MonoBehaviour
         Generation++;
         CountPlayers = PlayerPrefs.GetInt("PlayersSize");
 		LastPlayerList = PlayerList;
+        Save();
 		PlayerList = new List<Player>();
 		InstantiatePlayers();
 		StartCoroutine(GenerateObstacle());
@@ -314,7 +315,7 @@ public class Manager : MonoBehaviour
     /// </summary>
     public void Save()
     {
-        if(PlayerList.Count > 0)
+        if (PlayerList.Count > 0)
             PlayerList[0].PlayerBrain.SaveNeuralNetwork();
     }
 
